@@ -17,7 +17,13 @@ class CreditCard extends Model
         'expiration_date',
         'cvv',
         'cardholder_document',
+        'client_id'
     ];
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class);
+    }
 
     public function setCardNumberAttribute($value)
     {
