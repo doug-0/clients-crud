@@ -8,12 +8,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class CreditCardController extends Controller
 {
     public function index()
     {
-        $creditCards = CreditCard::all();
+        $clients = Auth::user()->clients;
+
+        $creditCards = CreditCard::whereIn('client_id', $clients->pluck('id'))->get();
 
         return response()->json($creditCards);
     }
@@ -28,6 +31,14 @@ class CreditCardController extends Controller
             'expiration_date' => 'required|string|date_format:m/y',
             'client_id' => 'required|integer|exists:clients,id',
         ]);
+
+        $client = Client::findOrFail($data['client_id']);
+
+        if ($client->user_id !== Auth::id()) {
+            return response()->json([
+                'message' => 'Unauthorized, the related client does not belong to you.',
+            ], 401);
+        }
 
         $expirationDate = Carbon::createFromFormat('m/y', $data['expiration_date'])->endOfMonth();
 
@@ -46,6 +57,12 @@ class CreditCardController extends Controller
     {
         $creditCard = CreditCard::findOrFail($id);
 
+        if ($creditCard->client->user_id !== Auth::id()) {
+            return response()->json([
+                'message' => 'Unauthorized, the related client does not belong to you.',
+            ], 401);
+        }
+
         return response()->json($creditCard);
     }
 
@@ -60,6 +77,14 @@ class CreditCardController extends Controller
             'client_id' => 'required|integer|exists:clients,id',
         ]);
 
+        $creditCard = CreditCard::findOrFail($id);
+
+        if ($creditCard->client->user_id !== Auth::id()) {
+            return response()->json([
+                'message' => 'Unauthorized, the related client does not belong to you.',
+            ], 401);
+        }
+
         $expirationDate = Carbon::createFromFormat('m/y', $data['expiration_date'])->endOfMonth();
 
         if ($expirationDate->isPast()) {
@@ -67,8 +92,6 @@ class CreditCardController extends Controller
         }
 
         $data['card_type'] = getCCType($request->card_number);
-
-        $creditCard = CreditCard::findOrFail($id);
 
         $creditCard->update($data);
 
@@ -79,6 +102,12 @@ class CreditCardController extends Controller
     {
         $creditCard = CreditCard::findOrFail($id);
 
+        if ($creditCard->client->user_id !== Auth::id()) {
+            return response()->json([
+                'message' => 'Unauthorized, the related client does not belong to you.',
+            ], 401);
+        }
+
         $creditCard->delete();
 
         return response()->json(['Credit Card deleted successfully.'], 200);
@@ -86,7 +115,6 @@ class CreditCardController extends Controller
 
     public function createMultipleCreditCardsforCustomer(Request $request)
     {
-        dd('aa');
         $data = $request->validate([
             'client_id' => 'required|integer|exists:clients,id',
             'credit_cards' => 'required|array',
@@ -98,6 +126,12 @@ class CreditCardController extends Controller
         ]);
 
         $client = Client::findOrFail($data['client_id']);
+
+        if ($client->user_id !== Auth::id()) {
+            return response()->json([
+                'message' => 'Unauthorized, the related client does not belong to you.',
+            ], 401);
+        }
 
         $invalidCards = collect($data['credit_cards'])->filter(function ($cardData) {
             $expirationDate = Carbon::createFromFormat('m/y', $cardData['expiration_date'])->endOfMonth();
@@ -138,6 +172,12 @@ class CreditCardController extends Controller
         ]);
 
         $client = Client::findOrFail($data['client_id']);
+
+        if ($client->user_id !== Auth::id()) {
+            return response()->json([
+                'message' => 'Unauthorized, the related client does not belong to you.',
+            ], 401);
+        }
 
         $errors = [];
 
@@ -183,6 +223,12 @@ class CreditCardController extends Controller
         ]);
 
         $client = Client::findOrFail($data['client_id']);
+
+        if ($client->user_id !== Auth::id()) {
+            return response()->json([
+                'message' => 'Unauthorized, the related client does not belong to you.',
+            ], 401);
+        }
 
         $invalidCards = CreditCard::whereIn('id', $data['credit_card_ids'])
             ->where('client_id', '!=', $client->id)
