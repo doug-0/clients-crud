@@ -26,7 +26,7 @@ class AuthenticatedSessionController extends Controller
 
             $user = Auth::user();
 
-            $token = $request->user()->createToken('api-token');
+            $token = $request->user()->createToken('api-token', ['*'], now()->addHours(3));
 
             return response()->json([
                 'user' => [

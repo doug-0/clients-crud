@@ -14,5 +14,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::delete('/credit-card/multiple', [CreditCardController::class, 'deleteMultipleCreditCards']);
 
     Route::resource('/credit-card', CreditCardController::class);
+
+    Route::get('/me',  function () {
+        return response()->json(['user' => auth()->user()]);
+    });
 });
 
