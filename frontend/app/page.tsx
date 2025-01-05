@@ -1,7 +1,10 @@
-export default function Home() {
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import Principal from '@/layouts/Principal'
+
+export default function Page() {
   return (
-    <div>
-      Home page
-    </div>
-  );
+    <Principal page='Home Page'>
+      Menu inicial
+    </Principal>
+  )
 }

@@ -35,9 +35,10 @@ export function LoginForm({ className,...props }: React.ComponentProps<"div">) {
       console.error(error)
     },
     onSuccess: async (success) => {
-      queryClient.setQueryData(['login-user'], success);
+      queryClient.setQueryData(['login-user'], success.user);
 
       localStorage.setItem('token', success.token);
+      localStorage.setItem('user', JSON.stringify(success.user));
 
       toast({
         title: `Olá, ${success.user.name}! Seja bem vindo(a)!`,
@@ -119,21 +120,23 @@ export function LoginForm({ className,...props }: React.ComponentProps<"div">) {
                     Forgot your password?
                   </a>
                 </div>
-                <Button 
-                  type="submit" 
-                  className="w-full"
-                  disabled={isPending}
-                >
-                  {isPending ? (
-                    <>
-                      <Button disabled>
-                        <Loader2 className="animate-spin" />
-                        Please wait...
-                      </Button>
-                    </>
+                {isPending ? (
+                  <>
+                    <Button disabled>
+                      <Loader2 className="animate-spin" />
+                      Please wait...
+                    </Button>
+                  </>
 
-                  ) : ('Login')}
-                </Button>
+                ) : (
+                  <Button 
+                    type="submit" 
+                    className="w-full"
+                    disabled={isPending}
+                  >
+                   Login
+                  </Button>
+                )}
                 <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                   <span className="relative z-10 bg-background px-2 text-muted-foreground">
                     Or continue with
