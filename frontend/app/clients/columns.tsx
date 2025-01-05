@@ -11,9 +11,9 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import Link from 'next/link'
 
 
 export type ClientTable = {
@@ -71,14 +71,10 @@ export const columns: ColumnDef<ClientTable>[] = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(client.id.toString())}
-            >
-              Copy client ID
+            <DropdownMenuLabel>Ações</DropdownMenuLabel>
+            <DropdownMenuItem>
+              <Link href={`clients/${client.id}`} >Detalhes do cliente</Link>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

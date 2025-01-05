@@ -7,7 +7,7 @@ import React from 'react'
 
 import { DataTable } from './data-table';
 import { columns } from './columns';
-import TableLoading from './table-loading';
+import TableLoading from '../../components/table-loading';
 
 export default function Clients() {
   const { data, isLoading } = useQuery({

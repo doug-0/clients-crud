@@ -67,6 +67,8 @@ class ClientController extends Controller
     public function show(Client $client)
     {
         try {
+            $client->load('creditCards');
+
             return response()->json([
                 'success' => true,
                 'data' => $client,
