@@ -10,18 +10,20 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form'
 
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { loginUser } from '@/service/authservice'
 import { FormLogin } from '@/types/FormLogin.type'
 
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
+import { Loader2 } from 'lucide-react'
 
 export function LoginForm({ className,...props }: React.ComponentProps<"div">) {
   const { toast } = useToast()
   const router = useRouter()
+  const queryClient = useQueryClient();
 
-  const loginUserMutation = useMutation({
+  const { isPending, mutate } = useMutation({
     mutationFn: (loginData: FormLogin) => loginUser(loginData),
     onError: (error) => {
       toast({
@@ -32,7 +34,11 @@ export function LoginForm({ className,...props }: React.ComponentProps<"div">) {
 
       console.error(error)
     },
-    onSuccess: (success) => {
+    onSuccess: async (success) => {
+      queryClient.setQueryData(['login-user'], success);
+
+      localStorage.setItem('token', success.token);
+
       toast({
         title: `Olá, ${success.user.name}! Seja bem vindo(a)!`,
         variant: 'default',
@@ -61,7 +67,7 @@ export function LoginForm({ className,...props }: React.ComponentProps<"div">) {
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    loginUserMutation.mutate(values)
+    mutate(values)
   }
 
   return (
@@ -113,8 +119,20 @@ export function LoginForm({ className,...props }: React.ComponentProps<"div">) {
                     Forgot your password?
                   </a>
                 </div>
-                <Button type="submit" className="w-full">
-                  Login
+                <Button 
+                  type="submit" 
+                  className="w-full"
+                  disabled={isPending}
+                >
+                  {isPending ? (
+                    <>
+                      <Button disabled>
+                        <Loader2 className="animate-spin" />
+                        Please wait...
+                      </Button>
+                    </>
+
+                  ) : ('Login')}
                 </Button>
                 <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                   <span className="relative z-10 bg-background px-2 text-muted-foreground">

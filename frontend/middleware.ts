@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function middleware(request: NextRequest) {
-  const authenticated = false;
+  // const authenticated = false;
 
-  if (!authenticated && request.nextUrl.pathname !== '/login' && request.nextUrl.pathname !== '/signup') {
-    return NextResponse.redirect(new URL('/login', request.url).toString());
-  }
+  // if (!authenticated && request.nextUrl.pathname !== '/login' && request.nextUrl.pathname !== '/signup') {
+  //   return NextResponse.redirect(new URL('/login', request.url).toString());
+  // }
 
   return NextResponse.next();
 }

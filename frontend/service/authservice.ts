@@ -1,6 +1,10 @@
 import { FormLogin } from '@/types/FormLogin.type'
 import axios from 'axios'
-import { GET_COOKIE, LOGIN_URL } from '@/configs/urls'
+import { GET_COOKIE, LOGIN_URL, VALIDATE_COOKIE } from '@/configs/urls'
+
+axios.defaults.withCredentials = true;
+axios.defaults.withXSRFToken = true;
+
 
 export const getCookie = async () => {
   await axios.get(GET_COOKIE, {
@@ -19,4 +23,17 @@ export const loginUser = async (formLogin: FormLogin) => {
   });
 
   return response.data;
+}
+
+export const validateToken = async (token: string | null) => {
+  await getCookie();
+
+  const response = await axios.get(VALIDATE_COOKIE, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+    withCredentials: true,
+  });
+
+  return response.data
 }
