@@ -18,7 +18,7 @@ class ClientController extends Controller
     public function index()
     {
         try {
-            $clients = Client::where('user_id', Auth::id())->paginate(10);
+            $clients = Client::where('user_id', Auth::id())->get();
 
             return response()->json([
                 'success' => true,
