@@ -20,6 +20,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { maskCEP, maskPhone } from '@/service/inputMask'
+import axios from 'axios'
+import debounce from 'lodash.debounce'
 
 const formSchema = z.object({
   name: z.string({
@@ -68,7 +71,7 @@ const formSchema = z.object({
   }),
   phone: z.string({
     required_error: "O telefone é obrigatório",
-  }).min(16, {
+  }).min(15, {
     message: "O telefone deve ter pelo menos 2 caracteres.",
   }),
   address_complement: z.string().optional(),
@@ -76,8 +79,8 @@ const formSchema = z.object({
 
 
 export function NewClientForm() {
-  const [date, setDate] = React.useState<Date>()
-
+  const [date, setDate] = React.useState<Date | undefined>()
+  const [controller, setController] = React.useState<AbortController | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -97,11 +100,47 @@ export function NewClientForm() {
     },
   })
 
-  const { setValue } = form;
+  const { setValue, setError } = form;
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    if(!values.birth_day) {
+      setError('birth_day', {
+        type: 'manual',
+        message: `A data de nascimento é obrigatória`
+      })
+
+      return;
+    }
+
     console.log(values)
   }
+
+  const handleCep = debounce(async (cep: string) => {
+    
+    if (controller) {
+      controller.abort();
+    }
+
+    const newController = new AbortController();
+    setController(newController);
+
+    try {
+      const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`, {
+        signal: newController.signal,
+      });
+
+      setValue('address', response.data.logradouro)
+      setValue('neighborhood', response.data.bairro)
+      setValue('city', response.data.localidade)
+      setValue('state', response.data.uf)
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        console.log('Requisição cancelada');
+      } else {
+        console.error('Erro ao buscar CEP: ', error);
+      }
+    }
+  }, 2000);
   
   return (
     <Card className='mt-5'>
@@ -182,7 +221,14 @@ export function NewClientForm() {
                         <FormItem>
                           <FormLabel>Telefone *</FormLabel>
                           <FormControl>
-                            <Input placeholder="83 98787-5808" {...field} />
+                            <Input 
+                              placeholder="83 98787-5808" 
+                              {...field} 
+                              value={field.value}
+                              onChange={(e) => {
+                                field.onChange(maskPhone(e))
+                              }}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -219,6 +265,7 @@ export function NewClientForm() {
                         />
                       </PopoverContent>
                     </Popover>
+                    <small className='text-red-500 mt-2'>{!form.getValues('birth_day') && form.formState.errors.birth_day && "A data de nascimento é obrigatória."}</small>
                   </div>
                 </div>
               </div>
@@ -242,6 +289,12 @@ export function NewClientForm() {
                             <Input 
                               placeholder="58433-795" 
                               {...field}
+                              value={field.value}
+                              onChange={(e) => {
+                                handleCep(e.target.value)
+
+                                field.onChange(maskCEP(e))
+                              }}
                             />
                           </FormControl>
                           <FormMessage />
