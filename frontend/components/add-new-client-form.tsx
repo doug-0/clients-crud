@@ -79,7 +79,7 @@ const formSchema = z.object({
 
 
 export function NewClientForm() {
-  const [date, setDate] = React.useState<Date | undefined>()
+  const [date, setDate] = React.useState<Date | undefined>();
   const [controller, setController] = React.useState<AbortController | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -98,25 +98,23 @@ export function NewClientForm() {
       city: "",
       phone: "",
     },
-  })
+  });
 
   const { setValue, setError } = form;
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    if(!values.birth_day) {
-      setError('birth_day', {
-        type: 'manual',
-        message: `A data de nascimento é obrigatória`
-      })
-
+    if (!values.birth_day) {
+      setError("birth_day", {
+        type: "manual",
+        message: `A data de nascimento é obrigatória`,
+      });
       return;
     }
 
-    console.log(values)
+    console.log(values);
   }
 
   const handleCep = debounce(async (cep: string) => {
-    
     if (controller) {
       controller.abort();
     }
@@ -129,28 +127,26 @@ export function NewClientForm() {
         signal: newController.signal,
       });
 
-      setValue('address', response.data.logradouro)
-      setValue('neighborhood', response.data.bairro)
-      setValue('city', response.data.localidade)
-      setValue('state', response.data.uf)
+      setValue("address", response.data.logradouro);
+      setValue("neighborhood", response.data.bairro);
+      setValue("city", response.data.localidade);
+      setValue("state", response.data.uf);
     } catch (error) {
       if (axios.isCancel(error)) {
-        console.log('Requisição cancelada');
+        console.log("Requisição cancelada");
       } else {
-        console.error('Erro ao buscar CEP: ', error);
+        console.error("Erro ao buscar CEP: ", error);
       }
     }
   }, 2000);
-  
+
   return (
-    <Card className='mt-5'>
+    <Card className="mt-5">
       <CardContent>
         <Form {...form}>
-          <form 
-            className="p-6 md:p-8" 
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
+          <form className="p-6 md:p-8" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
+              {/* Header */}
               <div className="flex flex-col">
                 <h1 className="text-2xl font-bold">Adicionar Novo Cliente</h1>
                 <small className="text-balance text-muted-foreground">
@@ -158,86 +154,75 @@ export function NewClientForm() {
                 </small>
               </div>
 
-              <div className='gap-5 mb-5'>
-                <div className='mb-3'>
-                  <h6 className='font-bold'>Informações pessoais</h6>
+              {/* Informações pessoais */}
+              <div className="gap-5 mb-5">
+                <div className="mb-3">
+                  <h6 className="font-bold">Informações pessoais</h6>
                 </div>
-                <div className='flex gap-3 mb-5'>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Nome *</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Nome do cliente" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="second_name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Sobrenome *</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Sobrenome do cliente" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email *</FormLabel>
-                          <FormControl>
-                            <Input placeholder="cliente@email.com" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                <div className="mb-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nome *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Nome do cliente" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="second_name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Sobrenome *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Sobrenome do cliente" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="cliente@email.com" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
-
-                <div className='flex gap-3'>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Telefone *</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="83 98787-5808" 
-                              {...field} 
-                              value={field.value}
-                              onChange={(e) => {
-                                field.onChange(maskPhone(e))
-                              }}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className='flex flex-col'>
-                    <FormLabel className='mb-[14px] pt-[4px]'>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Telefone *</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="83 98787-5808"
+                            {...field}
+                            value={field.value}
+                            onChange={(e) => {
+                              field.onChange(maskPhone(e));
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className='pt-2'>
+                    <FormLabel className="mb-[14px] pt-[4px]">
                       Data de nascimento *
                     </FormLabel>
                     <Popover>
@@ -245,7 +230,7 @@ export function NewClientForm() {
                         <Button
                           variant={"outline"}
                           className={cn(
-                            "w-[240px] justify-start text-left font-normal",
+                            "w-full justify-start text-left font-normal",
                             !date && "text-muted-foreground"
                           )}
                         >
@@ -258,163 +243,100 @@ export function NewClientForm() {
                           mode="single"
                           selected={date}
                           onSelect={(selectedDate) => {
-                            setDate(selectedDate)
-                            setValue('birth_day', selectedDate ?? null)
+                            setDate(selectedDate);
+                            setValue("birth_day", selectedDate ?? null);
                           }}
                           initialFocus
                         />
                       </PopoverContent>
                     </Popover>
-                    <small className='text-red-500 mt-2'>{!form.getValues('birth_day') && form.formState.errors.birth_day && "A data de nascimento é obrigatória."}</small>
+                    <small className="text-red-500 mt-2">
+                      {!form.getValues("birth_day") &&
+                        form.formState.errors.birth_day &&
+                        "A data de nascimento é obrigatória."}
+                    </small>
                   </div>
                 </div>
               </div>
 
               <Separator />
 
-              <div className='flex flex-col mb-8'>
-                <div className='mb-3'>
-                  <h6 className='font-bold'>Informações de Endereço</h6>
+              {/* Informações de Endereço */}
+              <div className="flex flex-col mb-8">
+                <div className="mb-3">
+                  <h6 className="font-bold">Informações de Endereço</h6>
                 </div>
-
-                <div className='flex gap-6 mb-5'>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="cep"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>CEP *</FormLabel>
-                          <FormControl>
-                            <Input 
-                              placeholder="58433-795" 
-                              {...field}
-                              value={field.value}
-                              onChange={(e) => {
-                                handleCep(e.target.value)
-
-                                field.onChange(maskCEP(e))
-                              }}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="address"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Endereço *</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Rua dos bobos" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="address_number"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Número *</FormLabel>
-                          <FormControl>
-                            <Input placeholder="56" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="address_complement"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Complemento</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Apt. 2" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  {/* Campos de endereço */}
+                  <FormField
+                    control={form.control}
+                    name="cep"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>CEP *</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="58433-795"
+                            {...field}
+                            value={field.value}
+                            onChange={(e) => {
+                              handleCep(e.target.value);
+                              field.onChange(maskCEP(e));
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Endereço *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Rua dos bobos" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="address_number"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Número *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="56" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="address_complement"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Complemento</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Apt. 2" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
-
-                <div className='flex gap-6'>
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="neighborhood"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Bairro *</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Portal dos Bosques" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="city"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Cidade *</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Campina Grande" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div>
-                    <FormField
-                      control={form.control}
-                      name="state"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Estado *</FormLabel>
-                          <FormControl>
-                            <Input placeholder="PB" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
-
               </div>
             </div>
-
-            <div className='flex justify-end'>
-              <Button 
-                type='submit'
-              >
-                Cadastrar novo cliente
-              </Button>
-            </div>
+            <Button type="submit" className="w-full md:w-auto">
+              Salvar Cliente
+            </Button>
           </form>
-        </Form>  
+        </Form>
       </CardContent>
     </Card>
-  )
+  );
 }
