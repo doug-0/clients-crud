@@ -20,15 +20,19 @@ import { DataTable } from './data-table'
 import { columns } from './columns'
 import TableLoading from '../../../components/table-loading'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useRouter } from 'next/navigation'
+import { format } from 'date-fns'
 
 export default function Page({ params }: { params: { client: number }}) {
+  const router = useRouter();
+
   const { data, isLoading } = useQuery({
     queryKey: ['client'],
     queryFn: () => getClient(params.client),
-    staleTime: 1000 * 60 * 60 * 24,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   })
-  
-  console.log({data, isLoading})
+
   return (
     <Principal page='Client'>
       <div className="mb-4 flex flex-col sm:flex-row sm:justify-between">
@@ -48,7 +52,12 @@ export default function Page({ params }: { params: { client: number }}) {
           </BreadcrumbList>
         </Breadcrumb>
         <div className="mt-2 sm:mt-0">
-          <Button type="button">Editar Informações</Button>
+          <Button 
+            type="button"
+            onClick={() => router.push(`/clients/${data.data.id}/edit`)}
+          >
+            Editar Informações
+          </Button>
         </div>
       </div>
 
@@ -78,13 +87,13 @@ export default function Page({ params }: { params: { client: number }}) {
                   <span className="font-medium text-gray-800">Nome:</span> {data.data.name}
                 </p>
                 <p className="text-gray-600">
-                  <span className="font-medium text-gray-800">Sobrenome:</span> {data.data.second_name ?? 'falta'}
+                  <span className="font-medium text-gray-800">Sobrenome:</span> {data.data.second_name}
                 </p>
                 <p className="text-gray-600">
                   <span className="font-medium text-gray-800">Email:</span> {data.data.email}
                 </p>
                 <p className="text-gray-600">
-                  <span className="font-medium text-gray-800">Data de Nascimento:</span> {data.data.birth_day ?? 'falta'}
+                  <span className="font-medium text-gray-800">Data de Nascimento:</span> {format(data.data.birth_day, 'yyyy/MM/dd')}
                 </p>
                 <p className="text-gray-600">
                   <span className="font-medium text-gray-800">Telefone:</span> {data.data.phone}

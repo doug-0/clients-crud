@@ -44,3 +44,22 @@ export const createClient = async (data: newClient) => {
 
   return response.data;
 }
+
+type editClient = {
+  second_name: string,
+  birth_day: Date | null,
+  id: number
+} & newClient
+
+export const updateClient = async (data: editClient) => {
+
+  const response = await axios.put(`${endpoint}/${data.id}`, { ...data },{
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${bearer_token}`,
+    },
+    withCredentials: true,
+  });
+
+  return response.data;
+}

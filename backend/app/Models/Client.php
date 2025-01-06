@@ -26,7 +26,9 @@ class Client extends Model
         'neighborhood',
         'city',
         'state',
-        'user_id'
+        'user_id',
+        'birth_day',
+        'second_name'
     ];
 
     public function user() {

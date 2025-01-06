@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class ClientController extends Controller
 {
@@ -43,6 +44,10 @@ class ClientController extends Controller
             $data = $request->validated();
 
             $data['user_id'] = Auth::id();
+
+            $birthDay = Carbon::parse($data['birth_day']);
+
+            $data['birth_day'] = $birthDay->format('Y-m-d H:i:s');
 
             $client = Client::create($data);
 
@@ -96,7 +101,13 @@ class ClientController extends Controller
                 ], 403);
             }
 
-            $client->update($request->validated());
+            $data = $request->validated();
+
+            $birthDay = Carbon::parse($data['birth_day']);
+
+            $data['birth_day'] = $birthDay->format('Y-m-d H:i:s');
+
+            $client->update($data);
 
             return response()->json([
                 'success' => true,

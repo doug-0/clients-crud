@@ -23,9 +23,10 @@ import {
 import { maskCEP, maskPhone } from '@/service/inputMask'
 import axios from 'axios'
 import debounce from 'lodash.debounce'
-import { createClient } from '@/service/clientservice'
+import { createClient, updateClient } from '@/service/clientservice'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
+import { Client } from '@/types/ClientsType'
 
 const formSchema = z.object({
   name: z.string({
@@ -80,9 +81,14 @@ const formSchema = z.object({
   address_complement: z.string().optional(),
 });
 
+type editClient = {
+  second_name: string,
+  birth_day: Date | undefined,
+  id: number
+} & Client
 
-export function NewClientForm() {
-  const [date, setDate] = React.useState<Date | undefined>();
+export function NewClientForm({ client }: { client: editClient | undefined }) {
+  const [date, setDate] = React.useState<Date | undefined>(client?.birth_day ? new Date(client.birth_day) : undefined);
   const [controller, setController] = React.useState<AbortController | null>(null);
   const { toast } = useToast()
   const router = useRouter()
@@ -90,18 +96,18 @@ export function NewClientForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      second_name: "",
-      email: "",
-      birth_day: undefined,
-      address: "",
-      address_complement: "",
-      address_number: "",
-      neighborhood: "",
-      cep: "",
-      state: "",
-      city: "",
-      phone: "",
+      name: client?.name ?? '',
+      second_name: client?.second_name ?? '',
+      email: client?.email ?? '',
+      birth_day: client?.birth_day ?? undefined,
+      address: client?.address ?? '',
+      address_complement: client?.address_complement ?? '',
+      address_number: client?.address_number ?? '',
+      neighborhood: client?.neighborhood ?? '',
+      cep: client?.cep ?? '',
+      state: client?.state ?? '',
+      city: client?.city ?? '',
+      phone: client?.phone ?? '',
     },
   });
 
@@ -116,10 +122,12 @@ export function NewClientForm() {
       return;
     }
 
-    console.log(values);
-
     try {
-      await createClient(values);
+      if (client?.id) {
+        await updateClient({ ...values, id: client.id});
+      } else {
+        await createClient(values);
+      }
 
       toast({
         title: `Cliente adicionado com sucesso!`,
@@ -172,7 +180,7 @@ export function NewClientForm() {
             <div className="flex flex-col gap-6">
               {/* Header */}
               <div className="flex flex-col">
-                <h1 className="text-2xl font-bold">Adicionar Novo Cliente</h1>
+                <h1 className="text-2xl font-bold">{client ? 'Editar Cliente' : 'Adicionar Novo Cliente'}</h1>
                 <small className="text-balance text-muted-foreground">
                   Campos marcados com * são obrigatórios.
                 </small>

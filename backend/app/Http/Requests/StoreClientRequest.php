@@ -33,6 +33,8 @@ class StoreClientRequest extends FormRequest
             'neighborhood' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'state' => 'required|string|max:2',
+            'birth_day' => 'required|date',
+            'second_name' => 'required|string'
         ];
     }
 }

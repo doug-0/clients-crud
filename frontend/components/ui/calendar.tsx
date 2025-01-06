@@ -68,6 +68,7 @@ function Calendar({
         ),
       }}
       {...props}
+      disabled={{ after: new Date() }}
     />
   )
 }

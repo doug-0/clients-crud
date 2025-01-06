@@ -23,7 +23,7 @@ class UpdateClientRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:clients,email',
+            'email' => 'required|email|email',
             'phone' => 'required|string|max:20',
             'address' => 'required|string|max:255',
             'cep' => 'required|string|max:10',
@@ -32,6 +32,8 @@ class UpdateClientRequest extends FormRequest
             'neighborhood' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'state' => 'required|string|max:2',
+            'birth_day' => 'required|date',
+            'second_name' => 'required|string'
         ];
     }
 }
