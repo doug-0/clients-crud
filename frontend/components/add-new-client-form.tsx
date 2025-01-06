@@ -147,6 +147,10 @@ export function NewClientForm({ client }: { client: editClient | undefined }) {
   }
 
   const handleCep = debounce(async (cep: string) => {
+    if(cep.length <= 2) {
+      return;
+    }
+    
     if (controller) {
       controller.abort();
     }
@@ -157,6 +161,14 @@ export function NewClientForm({ client }: { client: editClient | undefined }) {
     try {
       const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`, {
         signal: newController.signal,
+        withCredentials: false,
+        withXSRFToken: false,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          xsrfCookieName: null,
+          xsrfHeaderName: null,
+        }
       });
 
       setValue("address", response.data.logradouro);
