@@ -6,7 +6,20 @@ import { z } from "zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form'
 import { Input } from './ui/input'
 import { Card, CardContent } from './ui/card'
-import { DatePicker } from './ui/date-picker'
+import { Button } from './ui/button'
+import { Separator } from "@/components/ui/separator"
+import React from 'react'
+
+import { format } from "date-fns"
+import { CalendarIcon } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 
 const formSchema = z.object({
   name: z.string({
@@ -63,13 +76,16 @@ const formSchema = z.object({
 
 
 export function NewClientForm() {
+  const [date, setDate] = React.useState<Date>()
+
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       second_name: "",
       email: "",
-      birth_day: null,
+      birth_day: undefined,
       address: "",
       address_complement: "",
       address_number: "",
@@ -81,12 +97,14 @@ export function NewClientForm() {
     },
   })
 
+  const { setValue } = form;
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values)
   }
   
   return (
-    <Card>
+    <Card className='mt-5'>
       <CardContent>
         <Form {...form}>
           <form 
@@ -101,7 +119,10 @@ export function NewClientForm() {
                 </small>
               </div>
 
-              <div className='gap-5'>
+              <div className='gap-5 mb-5'>
+                <div className='mb-3'>
+                  <h6 className='font-bold'>Informações pessoais</h6>
+                </div>
                 <div className='flex gap-3 mb-5'>
                   <div>
                     <FormField
@@ -109,7 +130,7 @@ export function NewClientForm() {
                       name="name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Nome</FormLabel>
+                          <FormLabel>Nome *</FormLabel>
                           <FormControl>
                             <Input placeholder="Nome do cliente" {...field} />
                           </FormControl>
@@ -125,7 +146,7 @@ export function NewClientForm() {
                       name="second_name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Sobrenome</FormLabel>
+                          <FormLabel>Sobrenome *</FormLabel>
                           <FormControl>
                             <Input placeholder="Sobrenome do cliente" {...field} />
                           </FormControl>
@@ -141,7 +162,7 @@ export function NewClientForm() {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel>Email *</FormLabel>
                           <FormControl>
                             <Input placeholder="cliente@email.com" {...field} />
                           </FormControl>
@@ -152,14 +173,14 @@ export function NewClientForm() {
                   </div>
                 </div>
 
-                <div className='flex'>
+                <div className='flex gap-3'>
                   <div>
                     <FormField
                       control={form.control}
                       name="phone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Telefone</FormLabel>
+                          <FormLabel>Telefone *</FormLabel>
                           <FormControl>
                             <Input placeholder="83 98787-5808" {...field} />
                           </FormControl>
@@ -169,16 +190,107 @@ export function NewClientForm() {
                     />
                   </div>
 
+                  <div className='flex flex-col'>
+                    <FormLabel className='mb-[14px] pt-[4px]'>
+                      Data de nascimento *
+                    </FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[240px] justify-start text-left font-normal",
+                            !date && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon />
+                          {date ? format(date, "PPP") : <span>Selecione uma data</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={date}
+                          onSelect={(selectedDate) => {
+                            setDate(selectedDate)
+                            setValue('birth_day', selectedDate ?? null)
+                          }}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className='flex flex-col mb-8'>
+                <div className='mb-3'>
+                  <h6 className='font-bold'>Informações de Endereço</h6>
+                </div>
+
+                <div className='flex gap-6 mb-5'>
                   <div>
                     <FormField
                       control={form.control}
-                      name="birth_day"
+                      name="cep"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Data de Nascimento</FormLabel>
+                          <FormLabel>CEP *</FormLabel>
                           <FormControl>
-                            {/* <Input placeholder="Sobrenome do cliente" {...field} /> */}
-                            <DatePicker />
+                            <Input 
+                              placeholder="58433-795" 
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="address"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Endereço *</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Rua dos bobos" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="address_number"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Número *</FormLabel>
+                          <FormControl>
+                            <Input placeholder="56" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="address_complement"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Complemento</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Apt. 2" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -186,121 +298,66 @@ export function NewClientForm() {
                     />
                   </div>
                 </div>
+
+                <div className='flex gap-6'>
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="neighborhood"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Bairro *</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Portal dos Bosques" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="city"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Cidade *</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Campina Grande" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div>
+                    <FormField
+                      control={form.control}
+                      name="state"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Estado *</FormLabel>
+                          <FormControl>
+                            <Input placeholder="PB" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
               </div>
+            </div>
 
-              <div className='flex flex-wrap'>
-                <div className="grid gap-2">
-                  <FormField
-                    control={form.control}
-                    name="address"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Endereço</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Rua dos bobos" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="grid gap-2">
-                  <FormField
-                    control={form.control}
-                    name="address_number"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Número</FormLabel>
-                        <FormControl>
-                          <Input placeholder="56" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="grid gap-2">
-                  <FormField
-                    control={form.control}
-                    name="address_complement"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Complemento</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Apt. 2" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="grid gap-2">
-                  <FormField
-                    control={form.control}
-                    name="neighborhood"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Bairro</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Portal dos Bosques" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="grid gap-2">
-                  <FormField
-                    control={form.control}
-                    name="cep"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>CEP</FormLabel>
-                        <FormControl>
-                          <Input placeholder="58433-795" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="grid gap-2">
-                  <FormField
-                    control={form.control}
-                    name="state"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Estado</FormLabel>
-                        <FormControl>
-                          <Input placeholder="PB" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <div className="grid gap-2">
-                  <FormField
-                    control={form.control}
-                    name="city"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Cidade</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Campina Grande" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
+            <div className='flex justify-end'>
+              <Button 
+                type='submit'
+              >
+                Cadastrar novo cliente
+              </Button>
             </div>
           </form>
         </Form>  
