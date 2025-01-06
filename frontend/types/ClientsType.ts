@@ -19,3 +19,18 @@ export type LoggedUser =  {
   name: string,
   email: string
 }
+
+export type newClient = {
+  name: string,
+  second_name: string,
+  email: string,
+  birth_day: Date | null,
+  address: string,
+  address_number: string,
+  neighborhood: string,
+  cep: string,
+  state: string,
+  city: string,
+  phone: string,
+  address_complement?: string | undefined
+}

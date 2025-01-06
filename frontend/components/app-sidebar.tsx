@@ -57,7 +57,7 @@ const dataMenu = {
       items: [
         {
           title: "Novo Cliente",
-          url: "/add-client",
+          url: "/clients/create",
         },
         {
           title: "Todos os Clientes",

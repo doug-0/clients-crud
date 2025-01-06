@@ -1,4 +1,5 @@
 import { API_URL } from '@/configs/urls';
+import { newClient } from '@/types/ClientsType';
 import axios from 'axios'
 
 axios.defaults.withCredentials = true;
@@ -22,6 +23,18 @@ export const getAllClients = async () => {
 
 export const getClient = async (id: number) => {
   const response = await axios.get(`${endpoint}/${id}` , {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${bearer_token}`,
+    },
+    withCredentials: true,
+  });
+
+  return response.data;
+}
+
+export const createClient = async (data: newClient) => {
+  const response = await axios.post(endpoint, { ...data },{
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${bearer_token}`,

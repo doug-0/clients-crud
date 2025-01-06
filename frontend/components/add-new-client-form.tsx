@@ -23,6 +23,9 @@ import {
 import { maskCEP, maskPhone } from '@/service/inputMask'
 import axios from 'axios'
 import debounce from 'lodash.debounce'
+import { createClient } from '@/service/clientservice'
+import { useToast } from '@/hooks/use-toast'
+import { useRouter } from 'next/navigation'
 
 const formSchema = z.object({
   name: z.string({
@@ -48,7 +51,7 @@ const formSchema = z.object({
   }),
   address_number: z.string({
     required_error: "O número do endereço é obrigatório",
-  }).min(2, {
+  }).min(1, {
     message: "O número do endereço deve ter pelo menos 2 caracteres.",
   }),
   neighborhood: z.string({
@@ -81,6 +84,8 @@ const formSchema = z.object({
 export function NewClientForm() {
   const [date, setDate] = React.useState<Date | undefined>();
   const [controller, setController] = React.useState<AbortController | null>(null);
+  const { toast } = useToast()
+  const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -102,7 +107,7 @@ export function NewClientForm() {
 
   const { setValue, setError } = form;
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!values.birth_day) {
       setError("birth_day", {
         type: "manual",
@@ -112,6 +117,25 @@ export function NewClientForm() {
     }
 
     console.log(values);
+
+    try {
+      await createClient(values);
+
+      toast({
+        title: `Cliente adicionado com sucesso!`,
+        variant: 'default',
+      })
+
+      router.push('/clients')
+    } catch (error) {
+      console.error(error)
+
+      toast({
+        title: 'Algo deu errado!',
+        description: 'Entre em contato com o suporte e tente novamente mais tarde.',
+        variant: 'destructive',
+      })
+    }
   }
 
   const handleCep = debounce(async (cep: string) => {
@@ -323,6 +347,46 @@ export function NewClientForm() {
                         <FormLabel>Complemento</FormLabel>
                         <FormControl>
                           <Input placeholder="Apt. 2" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Cidade *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="São Paulo" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="neighborhood"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Bairro *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Portal dos bosques" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="state"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Estado *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="SP" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
