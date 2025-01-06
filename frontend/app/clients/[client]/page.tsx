@@ -22,14 +22,22 @@ import TableLoading from '../../../components/table-loading'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
+import { useAuth } from '@/hooks/useAuth'
+import LoadingSpinner from '@/components/loading-spinner'
 
 export default function Page({ params }: { params: { client: number }}) {
   const router = useRouter();
+  const { loading } = useAuth();
 
   const { data, isLoading } = useQuery({
     queryKey: [`client-${params.client}`],
     queryFn: () => getClient(params.client),
   })
+
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <Principal page='Client'>
