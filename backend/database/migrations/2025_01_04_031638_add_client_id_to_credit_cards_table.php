@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('credit_cards', function (Blueprint $table) {
-            $table->foreignId('client_id')->nullable()->change();
+            $table->foreignId('client_id')->nullable();
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('credit_cards', function (Blueprint $table) {
-            $table->foreignId('client_id')->nullable()->change();
+            $table->dropColumn('client_id');
         });
     }
 };
