@@ -99,7 +99,7 @@ export function NewClientForm({ client }: { client: editClient | undefined }) {
       name: client?.name ?? '',
       second_name: client?.second_name ?? '',
       email: client?.email ?? '',
-      birth_day: client?.birth_day ?? undefined,
+      birth_day: new Date(client?.birth_day) ?? undefined,
       address: client?.address ?? '',
       address_complement: client?.address_complement ?? '',
       address_number: client?.address_number ?? '',
@@ -134,7 +134,7 @@ export function NewClientForm({ client }: { client: editClient | undefined }) {
         variant: 'default',
       })
 
-      router.push('/clients')
+      router.push(`/clients/${client.id}`)
     } catch (error) {
       console.error(error)
 

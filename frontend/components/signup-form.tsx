@@ -158,7 +158,7 @@ export function SignupForm() {
                       <FormItem>
                         <FormLabel>Confirm password</FormLabel>
                         <FormControl>
-                          <Input type='confirm_password' placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;" {...field} />
+                          <Input type='password' placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
