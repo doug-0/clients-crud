@@ -120,6 +120,9 @@ Passos necessários para configurar e executar o projeto **Clients CRUD**. Certi
    ```bash
    sail up -d --build
    ```
+
+   Verifique se todos os containers estão rodando com sucesso para prosseguir.
+
 6. Execute as migrações do banco de dados:
 
    ```bash
