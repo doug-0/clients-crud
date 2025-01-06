@@ -63,3 +63,15 @@ export const updateClient = async (data: editClient) => {
 
   return response.data;
 }
+
+export const deletClient = async (id: number) => {
+  const response = await axios.delete(`${endpoint}/${id}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${bearer_token}`,
+    },
+    withCredentials: true,
+  });
+
+  return response.data;
+}

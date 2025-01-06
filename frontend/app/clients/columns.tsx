@@ -14,6 +14,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from 'next/link'
+import { DialogConfirmDeleteButton } from '@/components/confirm-delete'
+import { deletClient } from '@/service/clientservice'
 
 
 export type ClientTable = {
@@ -74,6 +76,9 @@ export const columns: ColumnDef<ClientTable>[] = [
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <DropdownMenuItem>
               <Link href={`clients/${client.id}`} >Detalhes do cliente</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <DialogConfirmDeleteButton textBtn='Excluir Cliente' id={1} func={deletClient} />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
