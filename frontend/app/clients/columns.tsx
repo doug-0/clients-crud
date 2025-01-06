@@ -6,16 +6,10 @@ import { Settings } from "lucide-react"
 import { ArrowUpDown } from "lucide-react" 
 
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import Link from 'next/link'
 import { DialogConfirmDeleteButton } from '@/components/confirm-delete'
 import { deletClient } from '@/service/clientservice'
+import { Badge } from '@/components/ui/badge'
 
 
 export type ClientTable = {
@@ -65,23 +59,19 @@ export const columns: ColumnDef<ClientTable>[] = [
       const client = row.original
  
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <Settings />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <DropdownMenuItem>
-              <Link href={`clients/${client.id}`} >Detalhes do cliente</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <DialogConfirmDeleteButton textBtn='Excluir Cliente' id={1} func={deletClient} />
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className='flex align-middle'>
+            <Badge>
+              <Link href={`clients/${client.id}`}>
+                <Settings size={15} />
+              </Link>
+            </Badge>
+          <DialogConfirmDeleteButton 
+            id={client.id} 
+            func={deletClient} 
+            type='client' 
+            client_id={client.id}
+          />
+        </div>
       )
     },
   },

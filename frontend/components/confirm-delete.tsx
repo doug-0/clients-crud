@@ -1,9 +1,8 @@
-import { Loader2 } from "lucide-react"
+import { Loader2, Trash } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -11,18 +10,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useToast } from '@/hooks/use-toast'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
-export function DialogConfirmDeleteButton({ id, func, textBtn }: { 
-  id: number, func: (id: number) => Promise<void>, textBtn: string 
+export function DialogConfirmDeleteButton({ id, func, type, client_id }: { 
+  id: number, func: (id: number) => Promise<void>, type: string , client_id: number
 }) {
   const { toast } = useToast();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [onOpen, setOnOpen] = useState(false);
 
   const { isPending, mutate } = useMutation({
     mutationFn: (id: number) => func(id),
@@ -36,71 +35,84 @@ export function DialogConfirmDeleteButton({ id, func, textBtn }: {
       console.error(error)
     },
     onSuccess: async (success) => {
-      queryClient.setQueryData([`delete-client-${id}`], success);
+      if (type == 'card') {
+        queryClient.setQueryData([`delete-credit-card-${id}`], success);
 
-      toast({
-        title: 'Cliente removido com sucesso!',
-        variant: 'default',
-      })
+        queryClient.resetQueries({ queryKey: [`client-${client_id}`] })
+  
+        toast({
+          title: 'Cartão removido com sucesso!',
+          variant: 'default',
+        })
 
-      router.push('/clients')
+        setOnOpen(false)
+
+        router.push(`/clients/${client_id}`)
+      } 
+
+      if (type == 'client') {
+        queryClient.setQueryData([`delete-client-${id}`], success);
+
+        queryClient.resetQueries({ queryKey: ['clients'] })
+  
+        toast({
+          title: 'Cliente removido com sucesso!',
+          variant: 'default',
+        })
+
+        setOnOpen(false)
+
+        router.push('/clients')
+      } 
     }
   })
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
+    <Dialog
+      open={onOpen}
+    >
+      <DialogTrigger>
         <Button 
-          type="button" 
-          className="w-full"
-        >
-          {textBtn}
-        </Button>
+          size={'sm'} 
+          variant="outline"
+          className='bg-red-600 h-[25px] text-gray-50 ml-5'
+          onClick={() => setOnOpen(true)}
+        ><Trash /></Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Share link</DialogTitle>
+          <DialogTitle>Tem certeza que deseja remover?</DialogTitle>
           <DialogDescription>
-            Anyone who has this link will be able to view this.
+            As ações não serão reversiveis, clique em confirmar para prosseguir.
           </DialogDescription>
         </DialogHeader>
-        <div className="flex items-center space-x-2">
-          <div className="grid flex-1 gap-2">
-            <Label htmlFor="link" className="sr-only">
-              Link
-            </Label>
-            <Input
-              id="link"
-              defaultValue="https://ui.shadcn.com/docs/installation"
-              readOnly
-            />
-          </div>
-          {isPending ? (
-            <>
-              <Button disabled>
-                <Loader2 className="animate-spin" />
-                Please wait...
+        <DialogFooter>
+          {
+            isPending ? (
+              <Button
+                type="button"
+                className='bg-red-600'
+                disabled
+              >
+                <Loader2 />
+                {' '}
+                Carregando...
+              </Button>) : (
+              <Button 
+                type="button"
+                className='bg-red-600'
+                onClick={() => mutate(id)}
+              >
+                Confirmar
               </Button>
-            </>
-
-          ) : (
-            <Button 
-              type="button" 
-              size="sm" 
-              className="px-3 w-full"
-              disabled={isPending}
-              onClick={() => mutate(id)}
-            >
-              {textBtn}
-            </Button>
-          )}
-        </div>
-        <DialogFooter className="sm:justify-start">
-          <DialogClose asChild>
-            <Button type="button" variant="secondary">
-              Close
-            </Button>
-          </DialogClose>
+            )
+          }
+          <Button
+            type='button'
+            onClick={() => setOnOpen(false)}
+          >
+            Cancelar
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

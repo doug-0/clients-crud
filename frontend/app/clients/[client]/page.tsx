@@ -27,10 +27,8 @@ export default function Page({ params }: { params: { client: number }}) {
   const router = useRouter();
 
   const { data, isLoading } = useQuery({
-    queryKey: ['client'],
+    queryKey: [`client-${params.client}`],
     queryFn: () => getClient(params.client),
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
   })
 
   return (

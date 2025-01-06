@@ -14,6 +14,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import Link from 'next/link'
+import { Badge } from '@/components/ui/badge'
+import { DialogConfirmDeleteButton } from '@/components/confirm-delete'
+import { deleteCreditCard } from '@/service/creditCardservice'
 
 
 export type ClientCreditCardTable = {
@@ -111,22 +114,19 @@ export const columns: ColumnDef<ClientCreditCardTable>[] = [
       const card = row.original
  
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <Settings />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <DropdownMenuItem>
-              <Link href={`/clients/${card.client_id}/credit-card/edit/${card.id}`}>
-                Ver detalhes do cartão de crédito
-              </Link>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className='flex align-middle'>
+          <Badge>
+            <Link href={`/clients/${card.client_id}/credit-card/edit/${card.id}`}>
+              <Settings size={15} />
+            </Link>
+          </Badge>
+          <DialogConfirmDeleteButton 
+            id={card.id} 
+            func={deleteCreditCard} 
+            type={'card'} 
+            client_id={card.client_id}
+          />
+        </div>
       )
     },
   },

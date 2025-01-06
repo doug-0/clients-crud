@@ -45,3 +45,15 @@ export const updateCreditCard = async (data: EditCreditCard) => {
 
   return response.data;
 }
+
+export const deleteCreditCard = async (id: number) => {
+  const response = await axios.delete(`${endpoint}/${id}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${bearer_token}`,
+    },
+    withCredentials: true,
+  });
+
+  return response.data;
+}

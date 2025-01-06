@@ -92,7 +92,7 @@ export function NewCreditCardForm({ credit_card, client_id }: { credit_card: Edi
         variant: 'default',
       })
 
-      router.push('/clients')
+      router.push(`/clients/${client_id}`)
     } catch (error) {
       console.error(error)
 
@@ -106,8 +106,6 @@ export function NewCreditCardForm({ credit_card, client_id }: { credit_card: Edi
 
   const currentDate = new Date();
   const minDate = currentDate.toISOString().slice(0, 7);
-
-  console.log(credit_card, form)
 
   return (
     <Card className="mt-5">
