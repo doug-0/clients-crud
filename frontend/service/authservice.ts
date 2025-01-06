@@ -26,7 +26,6 @@ export const loginUser = async (formLogin: FormLogin) => {
 }
 
 export const validateToken = async (token: string | null) => {
-  console.log('dentro do validateToken')
   await getCookie();
 
   try {

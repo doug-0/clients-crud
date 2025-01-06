@@ -62,8 +62,8 @@ export function LoginForm({ className,...props }: React.ComponentProps<"div">) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "mario@oliveira.com.br",
-      password: "654321",
+      email: "",
+      password: "",
     },
   })
 

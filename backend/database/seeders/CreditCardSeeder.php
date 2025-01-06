@@ -1,17 +1,21 @@
 <?php
 
-namespace Database\Seeders;
+namespace App\Http\Controllers;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
+use App\Models\Client;
+use App\Models\CreditCard;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
-class CreditCardSeeder extends Seeder
+class DashboardController extends Controller
 {
     /**
-     * Run the database seeds.
+     * Display a listing of the resource.
      */
-    public function run(): void
+    public function index()
     {
-        //
+
     }
 }
+

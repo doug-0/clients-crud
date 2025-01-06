@@ -134,7 +134,7 @@ export function NewClientForm({ client }: { client: editClient | undefined }) {
         variant: 'default',
       })
 
-      router.push(`/clients/${client.id}`)
+      router.push(`/clients`)
     } catch (error) {
       console.error(error)
 

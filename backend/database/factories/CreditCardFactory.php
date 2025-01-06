@@ -2,22 +2,24 @@
 
 namespace Database\Factories;
 
+use App\Models\CreditCard;
+use App\Models\Client;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CreditCard>
- */
 class CreditCardFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    protected $model = CreditCard::class;
+
+    public function definition()
     {
         return [
-            //
+            'card_type' => $this->faker->word(),
+            'cardholder_name' => $this->faker->name(),
+            'card_number' => $this->faker->creditCardNumber(),
+            'expiration_date' => $this->faker->creditCardExpirationDateString(),
+            'cvv' => '123',
+            'cardholder_document' => '999.999.999-99',
+            'client_id' => Client::inRandomOrder()->first()->id,
         ];
     }
 }
