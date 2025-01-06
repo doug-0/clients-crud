@@ -104,6 +104,12 @@ Passos necessários para configurar e executar o projeto **Clients CRUD**. Certi
    ```bash
    composer install
    ```
+
+   ou
+
+   ```bash
+   composer install --ignore-platform-reqs
+   ```
 4. Configure o comando sail:
 
    ```bash
