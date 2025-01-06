@@ -84,7 +84,6 @@ export function SignupForm() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (values.confirm_password !== values.password) {
-      console.log('dentro do if, deu erro')
       form.setError('confirm_password', { type: 'manual', message: "Passwords don't match" })
 
       return 
