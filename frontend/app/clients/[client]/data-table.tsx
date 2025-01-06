@@ -55,16 +55,14 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel()
   })
 
-  console.log(data)
-
   return (
     <>
       <div className="flex items-center py-4">
         <Input
           placeholder="Buscar cartão por bandeira..."
-          value={(table.getColumn("type")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("card_type")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("type")?.setFilterValue(event.target.value)
+            table.getColumn("card_type")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />

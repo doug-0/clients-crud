@@ -13,6 +13,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import Link from 'next/link'
 
 
 export type ClientCreditCardTable = {
@@ -21,7 +22,8 @@ export type ClientCreditCardTable = {
   cardholder_name: string
   card_number: string
   cvv: string
-  expiration_date: string
+  expiration_date: string,
+  client_id: number
 }
 
 export const columns: ColumnDef<ClientCreditCardTable>[] = [
@@ -105,8 +107,8 @@ export const columns: ColumnDef<ClientCreditCardTable>[] = [
     id: "actions",
     accessorKey: "actions",
     header: "Ações",
-    cell: () => {
-      // const card = row.original
+    cell: ({ row }) => {
+      const card = row.original
  
       return (
         <DropdownMenu>
@@ -118,7 +120,11 @@ export const columns: ColumnDef<ClientCreditCardTable>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <DropdownMenuItem>Ver detalhes do cartão de crédito</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={`/clients/${card.client_id}/credit-card/edit/${card.id}`}>
+                Ver detalhes do cartão de crédito
+              </Link>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

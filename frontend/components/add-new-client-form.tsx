@@ -279,6 +279,7 @@ export function NewClientForm({ client }: { client: editClient | undefined }) {
                             setValue("birth_day", selectedDate ?? null);
                           }}
                           initialFocus
+                          after={true}
                         />
                       </PopoverContent>
                     </Popover>

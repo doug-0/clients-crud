@@ -7,12 +7,13 @@ import { DayPicker } from "react-day-picker"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>
+export type CalendarProps = React.ComponentProps<typeof DayPicker> & { after: boolean }
 
 function Calendar({
   className,
   classNames,
   showOutsideDays = true,
+  after = true,
   ...props
 }: CalendarProps) {
   return (
@@ -68,7 +69,7 @@ function Calendar({
         ),
       }}
       {...props}
-      disabled={{ after: new Date() }}
+      disabled={after ? { after: new Date() } : { before: new Date() }}
     />
   )
 }

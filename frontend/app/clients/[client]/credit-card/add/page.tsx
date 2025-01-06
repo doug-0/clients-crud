@@ -1,6 +1,6 @@
 'use client'
 
-import { NewClientForm } from '@/components/add-new-client-form'
+import { NewCreditCardForm } from '@/components/add-new-credit-card-form'
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import Principal from '@/layouts/Principal'
 import { getClient } from '@/service/clientservice'
@@ -10,13 +10,13 @@ import React from 'react'
 
 export default function Page({ params }: { params: { client: number }}) {
   const { data, isLoading } = useQuery({
-    queryKey: [`client-${params.client}`],
+    queryKey: ['client'],
     queryFn: () => getClient(params.client),
     staleTime: 1000 * 60 * 60 * 24,
   })
 
   return (
-    <Principal page='Adicionar novo cliente'>
+    <Principal page='Adicionar cartão ao cliente'>
       <div className="mb-4 flex justify-between">
         <Breadcrumb>
           <BreadcrumbList>
@@ -29,12 +29,16 @@ export default function Page({ params }: { params: { client: number }}) {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Editar Cliente - {!isLoading && data.data.name}</BreadcrumbPage>
+              <Link href={`/clients/${!isLoading && data.data.id}`}>{!isLoading && data.data.name}</Link>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Adicionar Cartão de Crédito ao cliente - {!isLoading && data.data.name}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      {isLoading ? (<h1>carregando...</h1>) : (<NewClientForm client={data.data} />)}
+      {isLoading ? (<h1>carregando...</h1>) : (<NewCreditCardForm credit_card={undefined} client_id={data.data.id} />)}
     </Principal>
   )
 }

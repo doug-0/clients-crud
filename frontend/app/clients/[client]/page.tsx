@@ -93,7 +93,7 @@ export default function Page({ params }: { params: { client: number }}) {
                   <span className="font-medium text-gray-800">Email:</span> {data.data.email}
                 </p>
                 <p className="text-gray-600">
-                  <span className="font-medium text-gray-800">Data de Nascimento:</span> {format(data.data.birth_day, 'yyyy/MM/dd')}
+                  <span className="font-medium text-gray-800">Data de Nascimento:</span> {data.data.birth_day ? format(data.data.birth_day, 'yyyy/MM/dd') : ''}
                 </p>
                 <p className="text-gray-600">
                   <span className="font-medium text-gray-800">Telefone:</span> {data.data.phone}
@@ -124,7 +124,12 @@ export default function Page({ params }: { params: { client: number }}) {
         <div className="w-full lg:w-7/12 border p-4 rounded-md">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-800">Cartões de Crédito</h2>
-            <Button type="button" variant="outline" size="sm">
+            <Button 
+              type="button" 
+              variant="outline" 
+              size="sm"
+              onClick={() => router.push(`/clients/${data.data.id}/credit-card/add`)}
+            >
               Adicionar novo cartão
             </Button>
           </div>

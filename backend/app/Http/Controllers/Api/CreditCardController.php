@@ -28,7 +28,7 @@ class CreditCardController extends Controller
             'card_number' => 'required|string',
             'cardholder_document' => 'required|string',
             'cvv' => 'required|string',
-            'expiration_date' => 'required|string|date_format:m/y',
+            'expiration_date' => 'required|string',
             'client_id' => 'required|integer|exists:clients,id',
         ]);
 
@@ -40,13 +40,15 @@ class CreditCardController extends Controller
             ], 401);
         }
 
-        $expirationDate = Carbon::createFromFormat('m/y', $data['expiration_date'])->endOfMonth();
+        $expiration_date = Carbon::createFromFormat('Y-m', $data['expiration_date']);
 
-        if ($expirationDate->isPast()) {
+        if ($expiration_date->isPast()) {
             return response()->json(['message' => 'The expiration date cannot be less than to the current month.'], 400);
         }
 
         $data['card_type'] = getCCType($request->card_number);
+
+        $data['expiration_date'] = $expiration_date->format('m/y');
 
         CreditCard::create($data);
 
@@ -73,7 +75,7 @@ class CreditCardController extends Controller
             'card_number' => 'required|string',
             'cardholder_document' => 'required|string',
             'cvv' => 'required|string',
-            'expiration_date' => 'required|string|date_format:m/y',
+            'expiration_date' => 'required|string',
             'client_id' => 'required|integer|exists:clients,id',
         ]);
 
@@ -85,11 +87,13 @@ class CreditCardController extends Controller
             ], 401);
         }
 
-        $expirationDate = Carbon::createFromFormat('m/y', $data['expiration_date'])->endOfMonth();
+        $expiration_date = Carbon::createFromFormat('Y-m', $data['expiration_date']);
 
-        if ($expirationDate->isPast()) {
+        if ($expiration_date->isPast()) {
             return response()->json(['message' => 'The expiration date cannot be less than to the current month.'], 400);
         }
+
+        $data['expiration_date'] = $expiration_date->format('m/y');
 
         $data['card_type'] = getCCType($request->card_number);
 
