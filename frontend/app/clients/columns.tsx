@@ -25,31 +25,72 @@ export const columns: ColumnDef<ClientTable>[] = [
     accessorKey: "id",
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Id
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+        <div className='text-center'>
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Id
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        </div>
       )
+    },
+    cell: ({ row }) => {
+      return <div className="text-center font-medium">{row.getValue("id")}</div>;
     },
   },
   {
     accessorKey: "name",
-    header: "Nome",
+    header: () => {
+      return (
+        <div className='text-center'>
+          Nome
+        </div>
+      )
+    },
+    cell: ({ row }) => {
+      return <div className="text-center font-medium">{row.getValue("name")}</div>;
+    },
   },
   {
     accessorKey: "email",
-    header: "E-mail",
+    header: () => {
+      return (
+        <div className='text-center'>
+          Email
+        </div>
+      )
+    },
+    cell: ({ row }) => {
+      return <div className="text-center font-medium">{row.getValue("email")}</div>;
+    },
   },
   {
     accessorKey: "phone",
-    header: "Telefone",
+    header: () => {
+      return (
+        <div className='text-center'>
+          Telefone
+        </div>
+      )
+    },
+    cell: ({ row }) => {
+      return <div className="text-center font-medium">{row.getValue("phone")}</div>;
+    },
   },
   {
     accessorKey: "state",
-    header: "Estado",
+    header: () => {
+      return (
+        <div className='text-center'>
+          Estado
+        </div>
+      )
+    },
+    cell: ({ row }) => {
+      return <div className="text-center font-medium">{row.getValue("state")}</div>;
+    },
   },
   {
     id: "actions",

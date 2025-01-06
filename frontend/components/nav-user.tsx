@@ -31,6 +31,11 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { Skeleton } from './ui/skeleton'
+import Link from 'next/link'
+import { useQueryClient } from '@tanstack/react-query'
+import { logOutUser } from '@/service/authservice'
+import { useRouter } from 'next/navigation'
+import { useToast } from '@/hooks/use-toast'
 
 export function NavUser({
   user,
@@ -43,7 +48,24 @@ export function NavUser({
   },
   isLoading: boolean
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile } = useSidebar();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const logoutUser = () => {
+    queryClient.clear();
+
+    logOutUser()
+
+    router.push('/login')
+
+    toast({
+      title: 'Logout feito com sucesso!',
+      description: 'Até logo!',
+      variant: 'default',
+    })
+  }
 
   return (
     <SidebarMenu>
@@ -93,10 +115,12 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
+              <Link onClick={() => logoutUser()} href={'/login'} className='flex align-middle'>
+                <DropdownMenuItem>
+                  <LogOut size={15} className='mr-4' />
+                  Log out
+                </DropdownMenuItem>
+              </Link>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

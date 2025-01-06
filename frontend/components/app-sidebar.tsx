@@ -69,20 +69,7 @@ const dataMenu = {
       title: "Minha Conta",
       url: "#",
       icon: CircleUser,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
+      items: [],
     },
     {
       title: "Settings",

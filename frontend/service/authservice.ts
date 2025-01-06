@@ -1,6 +1,6 @@
 import { FormLogin } from '@/types/FormLogin.type'
 import axios from 'axios'
-import { GET_COOKIE, LOGIN_URL, VALIDATE_COOKIE } from '@/configs/urls'
+import { GET_COOKIE, LOGIN_URL, REGISTER_URL, VALIDATE_COOKIE } from '@/configs/urls'
 
 axios.defaults.withCredentials = true;
 axios.defaults.withXSRFToken = true;
@@ -36,4 +36,26 @@ export const validateToken = async (token: string | null) => {
   });
 
   return response.data
+}
+
+type signUpForm = {
+  name: string
+} & FormLogin
+
+export const signUpUser = async (formSignup: signUpForm) => {
+  await getCookie();
+
+  const response = await axios.post(REGISTER_URL, formSignup, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    withCredentials: true,
+  });
+
+  return response.data;
+}
+
+export const logOutUser = () => {
+  localStorage.removeItem('user');
+  localStorage.removeItem('token');
 }

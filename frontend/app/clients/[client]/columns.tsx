@@ -6,13 +6,6 @@ import { Settings } from "lucide-react"
 import { ArrowUpDown } from "lucide-react" 
 
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { DialogConfirmDeleteButton } from '@/components/confirm-delete'
